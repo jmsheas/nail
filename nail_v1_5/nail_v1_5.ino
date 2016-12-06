@@ -84,6 +84,9 @@ void loop() {
   //the temp it is
   if(abs(temp1-Setpoint) > 5){
     printout = (int) temp1;
+    for(int i=0;i<10000;i++){
+      sevseg.refreshDisplay();
+    }
   }
   else{
     printout = (int) temp;
