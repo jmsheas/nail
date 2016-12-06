@@ -87,9 +87,12 @@ void loop() {
   //the temp it is
   if(abs(temp1-Setpoint) > 5){
     timer = 100;
+    //set the new temp;
+    Setpoint = temp1;
   }
+  
   if(timer != 0){
-    printout = (int) temp1;
+    printout = (int) Setpoint;
     timer--;
   }
   else{
@@ -98,9 +101,6 @@ void loop() {
   sevseg.setNumber(printout,0);
   sevseg.refreshDisplay();
   sevseg.setBrightness(90);
-  
-  //set the new temp;
-  Setpoint = temp1;
   
   Input = temp;
    double gap = abs(Setpoint-Input); //distance away from setpoint
