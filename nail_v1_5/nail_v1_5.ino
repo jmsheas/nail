@@ -30,6 +30,9 @@ int printout;
 
 double temp;
 
+//timer for knob readout
+int timer = 0;
+
 //mem location of temp
 int tempad = 1;
 double temp1;
@@ -83,10 +86,11 @@ void loop() {
   //if a new value is wanted print that otherwise print 
   //the temp it is
   if(abs(temp1-Setpoint) > 5){
+    timer = 100;
+  }
+  if(timer != 0){
     printout = (int) temp1;
-    for(int i=0;i<10000;i++){
-      sevseg.refreshDisplay();
-    }
+    timer--;
   }
   else{
     printout = (int) temp;
