@@ -16,7 +16,7 @@ MAX6675 thermocouple(thermoCLK, thermoCS, thermoDO); // Declare and initialize t
 double Setpoint, Input, Output;
 
 //Define the aggressive and conservative Tuning Parameters
-double aggKp=4, aggKi=0.2, aggKd=1;
+double aggKp=3, aggKi=0.15, aggKd=.75;
 double consKp=1, consKi=0.05, consKd=0.25;
 
 //Specify the links and initial tuning parameters
