@@ -1,10 +1,10 @@
 #include <PID_v1.h> // PID Contol Algorithm
 #include <max6675.h> // Interface Thermocouple Chip
-#include "SevSeg.h"
-#include <Wire.h>
-#include <EEPROM.h>
+#include "SevSeg.h" // For the SevSeg display to work
+#include <EEPROM.h> //To save desired value in memory
 
 SevSeg sevseg;
+
 // Pinout for thermocuple
 int thermoDO = 10;
 int thermoCS = 11;
@@ -22,6 +22,7 @@ double consKp=1, consKi=0.05, consKd=0.25;
 //Specify the links and initial tuning parameters
 PID myPID(&Input, &Output, &Setpoint, consKp, consKi, consKd, DIRECT);
 
+//settings for pid and sevenseg
 int WindowSize = 5000;
 unsigned long windowStartTime;
 unsigned long previousMillis = 0;
@@ -46,7 +47,7 @@ void setup() {
   sevseg.begin(COMMON_CATHODE, numDigits, digitPins, segmentPins);
   
   Serial.begin(9600);
-  pinMode(A1, OUTPUT); // Relay pin
+  pinMode(A1, OUTPUT); // Relay pin A1
 
   windowStartTime = millis();
   
@@ -64,13 +65,13 @@ void setup() {
   //turn the PID on
   myPID.SetMode(AUTOMATIC);
 
-  //dlay for thermocouple
+  //dlay for thermocouple to turn on
   delay(500);
 }
 
 void loop() {
   //gets the wanted temp
-  temp1= analogRead(A2);
+  temp1= analogRead(A2); // Knob pin A2
   temp1= map(temp1, 0, 1023, 0, 1000);
   Serial.println(temp1);
   EEPROM.write(tempad, temp1);
@@ -98,12 +99,14 @@ void loop() {
   else{
     printout = (int) temp;
   }
+
+  //set brightness and value to print
   sevseg.setNumber(printout,0);
   sevseg.refreshDisplay();
   sevseg.setBrightness(90);
   
   Input = temp;
-   double gap = abs(Setpoint-Input); //distance away from setpoint
+  double gap = abs(Setpoint-Input); //distance away from setpoint
   if(gap<10)
   {  //we're close to setpoint, use conservative tuning parameters
     myPID.SetTunings(consKp, consKi, consKd);
@@ -113,6 +116,8 @@ void loop() {
      //we're far from setpoint, use aggressive tuning parameters
      myPID.SetTunings(aggKp, aggKi, aggKd);
   }
+
+  //computer what the PID should do
   myPID.Compute();
 
   /************************************************
