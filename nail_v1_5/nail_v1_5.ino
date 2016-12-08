@@ -17,6 +17,7 @@ double Setpoint, Input, Output;
 
 //Define the aggressive and conservative Tuning Parameters
 double aggKp=3, aggKi=0.15, aggKd=.75;
+double medKp=2, medKi=0.10, medKd=.50;
 double consKp=1, consKi=0.05, consKd=0.25;
 
 //Specify the links and initial tuning parameters
@@ -107,13 +108,16 @@ void loop() {
   
   Input = temp;
   double gap = abs(Setpoint-Input); //distance away from setpoint
-  if(gap<10)
-  {  //we're close to setpoint, use conservative tuning parameters
+  if(gap<75 && gap>=10)
+  {
+    myPID.SetTunings(medKp, medKi, consKd);
+  }
+  else if(gap<10)
+  {  
     myPID.SetTunings(consKp, consKi, consKd);
   }
   else
   {
-     //we're far from setpoint, use aggressive tuning parameters
      myPID.SetTunings(aggKp, aggKi, aggKd);
   }
 
